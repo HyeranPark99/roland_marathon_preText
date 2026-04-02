@@ -2,7 +2,7 @@
 
 A browser-based literary demo built with [`@chenglou/pretext`](https://github.com/chenglou/pretext), rendering selected Durandal passages from *La Chanson de Roland*.
 
-**Live:** https://roland-marathon-pre-text.vercel.app/
+**Live:** https://roland-marathon-pretext.vercel.app/
 
 ---
 
@@ -51,7 +51,8 @@ npm run dev
 This is a **fan project** made for creative and technical exploration purposes only.
 
 - *La Chanson de Roland* is a medieval French epic poem (c. 11th century) and is in the public domain.
-- The video footage, imagery, and any other media assets used in this demo are **not owned by the creator of this project**.
+- The video footage, imagery, and any other media assets used in this demo are **not owned by me**.
+- The in game screen is captured from the game MARATHON (Bungie, 2026).
 - This project is **not affiliated with, endorsed by, or connected to** any rights holder.
 - No commercial use is intended or implied.
 

@@ -1,0 +1,208 @@
+:root {
+  --color-bg: #000000;
+  --color-title: #c2fe0b;
+  --color-subtitle: rgba(255, 255, 255, 0.35);
+  --color-body: #ffffff;
+  --color-durandal: #5200ff;
+  --color-durandal-hover: #c2fe0c;
+  --font-title: 'Russo One', sans-serif;
+  --font-body: 'DM Mono', monospace;
+  --font-size: 12px;
+  --line-height: 20px;
+  --gutter: 1cm;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: var(--color-bg);
+  color: var(--color-body);
+  font-family: var(--font-body);
+  font-size: var(--font-size);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-y: scroll; /* always show scrollbar so clientWidth never shifts when content loads */
+  cursor: url('/cursor.png') 1 1, auto;
+}
+
+/* Keep custom cursor on interactive elements (override browser default pointer) */
+.durandal,
+.ascii-inline {
+  cursor: url('/cursor.png') 1 1, pointer;
+}
+
+body {
+  min-height: 100vh;
+}
+
+/* ── Header ─────────────────────────────── */
+
+header {
+  position: relative;
+  padding: 72px var(--gutter) 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 48px;
+  user-select: none;
+}
+
+/* ── Data readout panel ──────────────────────────── */
+
+#data-stage {
+  position: absolute;
+  top: 72px;
+  right: var(--gutter);
+  overflow: hidden;
+  /* width / height set by JS */
+}
+
+/* Green monospace chars inside the data panel */
+.data-char {
+  position: absolute;
+  white-space: pre;
+  font-family: var(--font-body);
+  font-size: calc(var(--font-size) - 1px);
+  line-height: var(--line-height);
+  color: var(--color-title);
+}
+
+@media (max-width: 900px) {
+  #data-stage { display: none; }
+}
+
+.title {
+  font-family: var(--font-title);
+  font-size: clamp(28px, 6vw, 52px);
+  color: var(--color-title);
+  letter-spacing: 0.05em;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-subtitle);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── Main text area ──────────────────────── */
+
+main {
+  padding: 0 var(--gutter) 120px;
+}
+
+#text-stage {
+  width: 100%;
+  user-select: none;
+}
+
+/* ── Stage — all lines are direct absolute children, JS sets left+top ─── */
+/* Architecture matches the pretext dynamic-layout demo: no CSS flex columns,
+   no container divs. JS owns all positioning; CSS does nothing here. */
+
+#text-stage {
+  position: relative;
+  width: 100%;
+  /* height set by JS */
+}
+
+/* Hairline rule between spreads */
+.spread-rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ── Individual characters ───────────────── */
+/* Each non-space char is its own absolutely-positioned span.
+   left/top set by JS: lineX + charIndexInLine * CHAR_WIDTH, lineTop. */
+
+.char {
+  position: absolute;
+  white-space: pre;
+  font-family: var(--font-body);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--color-body);
+}
+
+/* ── Durandal trigger word ───────────────── */
+/* Rendered as a single absolutely-positioned span (not split into chars)
+   so the glitch effect and click handler remain intact. */
+
+.durandal {
+  position: absolute;
+  white-space: pre;
+  font-family: var(--font-body);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--color-durandal);
+}
+
+/* Glitch shake — position jitter + colour flicker on proximity/hover.
+   steps(1) makes it jump rather than ease, giving a digital-glitch feel.
+   Only applied when inactive (no --active class). */
+@keyframes durandal-glitch {
+  0%   { transform: translate(0,    0);    color: var(--color-durandal); }
+  15%  { transform: translate(-3px, 1px);  color: #c2fe0b; }
+  30%  { transform: translate( 3px,-2px);  color: #ff2d78; }
+  45%  { transform: translate(-2px, 2px);  color: var(--color-durandal); }
+  60%  { transform: translate( 2px,-1px);  color: #c2fe0b; }
+  75%  { transform: translate(-3px, 1px);  color: #ff2d78; }
+  90%  { transform: translate( 1px,-2px);  color: var(--color-durandal); }
+  100% { transform: translate(0,    0);    color: var(--color-durandal); }
+}
+
+.durandal:not(.durandal--active):hover {
+  animation: durandal-glitch 0.18s steps(1) infinite;
+}
+
+.durandal--active {
+  color: var(--color-durandal-hover);
+}
+
+/* ── ASCII inline block ──────────────────── */
+/* One div per line of ASCII art, absolutely positioned inside #text-stage
+   by JS — same architecture as body .line elements.
+   font-size and line-height are set by JS so ASCII_COLS chars fill stage width. */
+
+.ascii-inline {
+  position: absolute;
+  white-space: pre;
+  font-family: var(--font-body);
+  color: var(--color-durandal-hover);
+  /* font-size / line-height set per render by JS */
+}
+
+
+/* ── Loading indicator ───────────────────── */
+
+#text-stage:empty::after {
+  content: 'loading...';
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--font-size);
+  color: var(--color-subtitle);
+  padding: 8px 0;
+}
+
+/* ── Responsive ──────────────────────────── */
+
+@media (max-width: 600px) {
+  :root {
+    --gutter: 20px;
+  }
+
+  header {
+    padding-top: 40px;
+  }
+}
